@@ -1,0 +1,10 @@
+Flask
+yfinance
+streamlit
+requests
+pandas
+matplotlib
+prophet
+scikit-learn
+torch
+seaborn
