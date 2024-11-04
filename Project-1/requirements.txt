@@ -1,6 +1,0 @@
-yfinance
-prophet
-scikit-learn
-pandas
-matplotlib
-seaborn
