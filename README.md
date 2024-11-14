@@ -1,94 +1,209 @@
-# Stock Price Prediction and Trading Strategy Tool
+---
 
-## Overview
-This project is an advanced tool for predicting stock prices and generating trading strategies using a hybrid bidirectional LSTM model. It processes historical stock data, forecasts future price trends, and provides actionable trading insights such as whether to buy, sell, or hold stocks. The system features an intuitive frontend built with Streamlit for ease of use, making it ideal for traders and analysts seeking data-driven decision support.
+# Stock Price Prediction and Trading Strategy Pipeline
+
+This project provides a stock price prediction and trading recommendation tool. It leverages a hybrid model combining Prophet (for trend and seasonality) and LSTM (for sequential learning) to predict future stock prices. The tool includes an interactive user interface, allowing users to enter stock tickers, view predictions, and receive buy/sell/hold recommendations.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Testing](#testing)
+  - [Unit Testing](#unit-testing)
+  - [Integration Testing](#integration-testing)
+  - [System Testing](#system-testing)
+  - [Performance and Load Testing](#performance-and-load-testing)
+  - [Security Testing](#security-testing)
+  - [Code Quality Checks](#code-quality-checks)
+- [Continuous Integration](#continuous-integration)
+- [License](#license)
+
+## Project Overview
+
+The goal of this project is to forecast stock prices based on historical data and provide actionable trading strategies (buy, sell, hold) using an intuitive Streamlit interface. This software includes modules for data collection, preprocessing, feature engineering, modeling, and visualization.
 
 ## Features
-- **Stock Price Prediction**: Uses a powerful bidirectional LSTM model for accurate time-series forecasting.
-- **Trading Strategy Recommendation**: Suggests whether to buy, sell, or hold stocks based on predicted trends.
-- **Interactive User Interface**: Built with Streamlit for seamless user interaction and visualization.
-- **Technical Indicator Integration**: Includes various technical indicators for enhanced prediction.
+
+- **Stock Price Forecasting**: Uses a hybrid Prophet and bidirectional LSTM model for accurate stock price predictions.
+- **Technical Indicators**: Incorporates SMA, EMA, Bollinger Bands, and other indicators for enriched features.
+- **Trading Strategy Recommendations**: Suggests buy, sell, or hold actions based on predictions.
+- **Interactive Interface**: Streamlit-powered UI for entering stock tickers, displaying predictions, and viewing trading recommendations.
 
 ## Technology Stack
-- **Frontend**: Streamlit for interactive web applications.
-- **Backend**: Flask to manage the pipeline execution and API integration.
-- **Machine Learning**: PyTorch for building and training the bidirectional LSTM model.
-- **Data Processing**: Pandas and NumPy for data manipulation and feature engineering.
-- **Visualization**: Matplotlib for generating prediction plots.
+
+- **Frontend**: Streamlit for user interface.
+- **Backend**: Flask for pipeline and API management.
+- **Machine Learning**: PyTorch for LSTM modeling and Facebook Prophet for time-series analysis.
+- **Data Processing**: Pandas and NumPy for data manipulation.
+- **Testing**: Pytest for unit and integration tests, Locust for performance testing, OWASP ZAP for security testing.
+- **CI/CD**: GitHub Actions for automated testing.
+
+## Project Structure
+
+```plaintext
+project/
+├── src/                           # Source code directory
+│   ├── __init__.py
+│   ├── config.py                  # Configurations (ticker symbol, date range, etc.)
+│   ├── data_gathering.py          # Fetches stock data from Yahoo Finance
+│   ├── preprocessing.py           # Data preprocessing (missing values, scaling)
+│   ├── feature_engineering.py     # Adds technical indicators (SMA, EMA, etc.)
+│   ├── prophet_model.py           # Manages Prophet model training and predictions
+│   ├── hybrid_model.py            # Manages LSTM model training and predictions
+│   ├── data_split.py              # Splits data into training and testing sets
+│   ├── evaluation.py              # Model evaluation (MAE, RMSE, accuracy, etc.)
+│   └── visualization.py           # Plots actual vs. predicted prices
+├── tests/                         # Tests directory
+│   ├── unit/                      # Unit tests
+│   ├── integration/               # Integration tests
+│   ├── system/                    # System and end-to-end tests
+│   ├── performance/               # Performance and load tests
+│   ├── security/                  # Security tests
+│   └── linting/                   # Code quality checks
+├── .github/                       # CI configuration
+│   └── workflows/
+│       └── test.yml               # GitHub Actions for automated testing
+├── requirements.txt               # Python package dependencies
+└── README.md                      # Project documentation
+```
 
 ## Installation
+
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/stock-price-prediction.git
    cd stock-price-prediction
    ```
-2. **Create a virtual environment and activate it**:
+
+2. **Create and activate a virtual environment**:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-3. **Install the required packages**:
+
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
-4. **Install additional dependencies** (e.g., `plotly` for better visualization):
+
+4. **Install additional dependencies** (e.g., Locust for load testing, Selenium for end-to-end tests):
    ```bash
-   pip install plotly
+   pip install locust pytest flake8
    ```
 
 ## Usage
+
 ### Running the Backend
-1. Navigate to the `backend` directory:
+
+1. Navigate to the project directory:
    ```bash
    cd backend
    ```
-2. Run the Flask server:
+2. Start the Flask server:
    ```bash
    python app.py
    ```
+
 ### Running the Frontend
-1. Open a new terminal and navigate to the `frontend` directory:
+
+1. Open a new terminal and navigate to the frontend directory:
    ```bash
    cd frontend
    ```
-2. Run the Streamlit app:
+2. Run the Streamlit application:
    ```bash
    streamlit run app.py
    ```
 
-## How to Use
-1. **Enter a Stock Ticker**: Input the stock ticker symbol (e.g., AAPL) in the provided field.
-2. **Run the Prediction**: Click the "Run Prediction" button.
-3. **View Results**: The prediction plot and trading strategy will be displayed on the screen.
+### Running the Entire Prediction Pipeline
 
-## Key Components
-### 1. LSTM Model
-A bidirectional LSTM model captures both past and future trends in the data for more accurate predictions. The model includes multiple layers, dropout for regularization, and an adjustable hidden size.
+To run the pipeline end-to-end and obtain predictions, use the following command:
+```bash
+python scripts/run_pipeline.py
+```
 
-### 2. Trading Strategy
-The project provides a trading recommendation based on the predicted trend. The logic suggests:
-- **Buy**: When a significant price increase is expected.
-- **Sell**: When a significant price decrease is anticipated.
-- **Hold**: When minimal price change is expected.
+## Testing
 
-### 3. Data Pipeline
-The data pipeline involves:
-- **Data Gathering**: Fetching stock price data using APIs (e.g., `yfinance`).
-- **Preprocessing**: Scaling and structuring data into sequences for LSTM input.
-- **Feature Engineering**: Adding technical indicators like SMA, EMA, and Bollinger Bands.
+To ensure quality, this project includes comprehensive testing for all components, using various testing strategies.
 
-## Future Enhancements
-- **Integration with live market data** for real-time predictions.
-- **Improved trading logic** with risk management strategies.
-- **Enhanced visualizations** using interactive libraries like `plotly`.
+### Unit Testing
 
-## Contributing
-Contributions are welcome! Please fork the repository and create a pull request with your proposed changes.
+**Location**: `tests/unit/`
+
+Run all unit tests to verify the functionality of individual functions:
+```bash
+pytest tests/unit/
+```
+
+### Integration Testing
+
+**Location**: `tests/integration/`
+
+Run integration tests to verify interactions between modules:
+```bash
+pytest tests/integration/
+```
+
+### System Testing
+
+**Location**: `tests/system/`
+
+Run end-to-end tests to verify the entire pipeline functions correctly:
+```bash
+pytest tests/system/
+```
+
+### Performance and Load Testing
+
+**Location**: `tests/performance/`
+
+Run load testing with Locust to simulate multiple users:
+1. Start Locust load testing:
+   ```bash
+   locust -f tests/performance/load_test_backend.py
+   ```
+2. Access Locust’s web interface at `http://127.0.0.1:8089`.
+
+### Security Testing
+
+**Location**: `tests/security/`
+
+Security tests check for vulnerabilities in the backend:
+```bash
+pytest tests/security/
+```
+
+Alternatively, use OWASP ZAP for more detailed security scans:
+1. Install [OWASP ZAP](https://www.zaproxy.org/download/).
+2. Run ZAP against the backend endpoint to identify potential security vulnerabilities.
+
+### Code Quality Checks
+
+**Location**: `tests/linting/`
+
+Run `pylint` and `flake8` to enforce code standards:
+```bash
+python tests/linting/run_code_quality_checks.py
+```
+
+## Continuous Integration
+
+GitHub Actions is set up to automate tests on each commit or pull request. The CI workflow file (`.github/workflows/test.yml`) includes steps for:
+
+- Running unit, integration, and system tests with `pytest`.
+- Checking code quality with `pylint` and `flake8`.
+- Running end-to-end tests for the UI.
+
+To trigger CI/CD, push changes to the repository, and GitHub Actions will automatically start the testing workflow.
 
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
-For any questions or support, please reach out to [your.email@example.com].
-
+For questions or contributions, feel free to open an issue or submit a pull request.
